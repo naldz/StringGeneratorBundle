@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use Naldz\Bundle\StringGeneratorBundle\Generator\StringGenerator;
 use Naldz\Bundle\StringGeneratorBundle\Tests\Helper\App\AppKernel;
+use Symfony\Component\Console\Output\StreamOutput;
+use Symfony\Component\Console\Input\ArgvInput;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +26,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->appRoot = __DIR__.'/../Helper/App';
         $this->kernel = new AppKernel($this->env, true);
         $this->application = new Application($this->kernel);
-
+        $this->application->setAutoExit(false);
         $this->kernel->boot();
     }
 
@@ -36,11 +38,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     public function testCommandIsRegistered()
     {
-        //$command = $this->application->find('string-generator:generate');
-        //$this->assertInstanceOf('Naldz\Bundle\StringGeneratorBundle\Command\GenerateStringCommand', $generator);
-        foreach ($this->application->all() as $name => $cmd) {
-            var_dump($name);
-        }
+        $input = new ArgvInput(array(null, '--version'));
+        $output = new StreamOutput(fopen('php://memory', 'w', false));
+        $this->application->run($input, $output);
+        
+        $command = $this->application->find('string-generator:generate');
+        $this->assertInstanceOf('Naldz\Bundle\StringGeneratorBundle\Command\GenerateStringCommand', $command);
+        
     }
 
 }
