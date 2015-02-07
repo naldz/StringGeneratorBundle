@@ -1,0 +1,3 @@
+services:
+    string_generator.generator:
+        class: Naldz\Bundle\StringGeneratorBundle\Generator\StringGenerator

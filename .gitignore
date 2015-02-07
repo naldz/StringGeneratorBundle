@@ -1,0 +1,3 @@
+vendor/*
+Test/Helper/App/cache/*
+Test/Helper/App/logs/*
